@@ -1,15 +1,13 @@
 package com.example.exampletwo.Controller
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.service.autofill.Dataset
-import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.exampletwo.Adapters.CategoryAdapter
 import com.example.exampletwo.Adapters.CategoryRecycleAdapter
-import com.example.exampletwo.Model.Category
 import com.example.exampletwo.R
 import com.example.exampletwo.Services.DataService
+import com.example.exampletwo.Utilities.EXTRA_CATEGORY
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,12 +18,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        adapter = CategoryRecycleAdapter(this,DataService.categories)
-        categoryListView.adapter = adapter
+        adapter = CategoryRecycleAdapter(this, DataService.categories) {category ->
+            val productIntent = Intent(this,ProductsActivity::class.java)
+            productIntent.putExtra(EXTRA_CATEGORY,category.name)
+            startActivity(productIntent)
+
+        }
+
+        productListView.adapter = adapter
 
         val layoutManager = LinearLayoutManager(this)
-        categoryListView.layoutManager = layoutManager
-        categoryListView.setHasFixedSize(true)
+        productListView.layoutManager = layoutManager
+        productListView.setHasFixedSize(true)
+
+
 
     }
 }
