@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         adapter = CategoryRecycleAdapter(this, DataService.categories) {category ->
             val productIntent = Intent(this,ProductsActivity::class.java)
             productIntent.putExtra(EXTRA_CATEGORY,category.name)
+            println("CATEGORY ${category.name}")
             startActivity(productIntent)
 
         }

@@ -1,51 +1,49 @@
 package com.example.exampletwo.Controller
 
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.exampletwo.Adapters.ProductRecycleAdapter
 import com.example.exampletwo.Model.Product
 import com.example.exampletwo.R
 import com.example.exampletwo.Services.DataService
 import com.example.exampletwo.Utilities.EXTRA_CATEGORY
 import com.example.exampletwo.Utilities.EXTRA_PRODUCT
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_product_detail.*
 
-class ProductsActivity : AppCompatActivity() {
+class ProductDetailActivity : AppCompatActivity() {
 
     lateinit var adapter : ProductRecycleAdapter
     var product = Product("","","")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_products)
+        setContentView(R.layout.activity_product_detail)
 
         val categoryType = intent.getStringExtra(EXTRA_CATEGORY)
 
+
         adapter = ProductRecycleAdapter(this,DataService.getProducts(categoryType)){product ->
-            val productDetailIntent = Intent(this,ProductDetailActivity::class.java)
-            productDetailIntent.putExtra(EXTRA_PRODUCT, product)
+            val productDetailIntent = Intent(this, ProductDetailActivity::class.java)
+            productDetailIntent.putExtra(EXTRA_PRODUCT,product)
             productDetailIntent.putExtra(EXTRA_CATEGORY, categoryType)
             startActivity(productDetailIntent)
+
         }
 
-        var spanCount = 2
-        val orientation = resources.configuration.orientation
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
+        horizontalView.adapter = adapter
+        horizontalView.layoutManager = layoutManager
 
-        if(orientation == Configuration.ORIENTATION_LANDSCAPE)
-            spanCount = 3
+        val product = intent.getParcelableExtra<Product>(EXTRA_PRODUCT)
+        val image = resources.getIdentifier(product.image, "drawable", packageName)
+        productDetailImage.setImageResource(image)
+        productDetailName.text = product.title
+        productDetailPrice.text = product.price
 
 
-        val screenSize = resources.configuration.screenWidthDp
-        if(screenSize > 720)
-            spanCount = 3
 
-        val layoutManager = GridLayoutManager(this,spanCount)
-
-        productListView.adapter = adapter
-        productListView.layoutManager = layoutManager
 
 
     }
